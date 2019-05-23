@@ -1,0 +1,39 @@
+/*
+    sticky nav that will stay at the top of the screen
+*/
+nav{
+    position: fixed;
+    top:0;
+    left:0;
+    width: 100%;
+    padding: 20px;
+    background: #eee;
+}
+nav a{
+    text-decoration: none;
+    color: #000;
+    transition: all 1s;
+}
+
+/*
+    section styling begins here
+*/
+section{
+    margin-bottom: 20px;
+}
+/*
+ switched snapscroll class in the container to reduce work
+*/
+.snapscroll h2{
+    background: #000;
+    color: #fff;
+    padding: 20px;
+}
+.snapscroll div {
+    height: 100vh;
+    background: #999;
+}
+.snapscroll div:first-child{
+    margin-top:60px;
+}
+
