@@ -1,40 +1,73 @@
-/*
-    navOffset holds the height of the navigation
-    $ in this project refers to the jQuery library
-    $("nav") will grab the nav tag in the index.html file
-    .innerHeight() will take the hight of the nav as defined by the css
-*/
 let navOffset = $("nav").innerHeight();
-
-/*
-    "nav a" looks for the "a" tags inside of the "nav" tag
-    a[^='#'] means the code specifically looks for the "a" tags that have an href that starts with #.  This means that #one, #two, and #three are all selected
-
-    .click refers to the event.  if #one, #two, or #three are clicked, this command listens to the event
-
-    .click() is a function that takes a function as its parameter.  The function is anonymous(as it is just refered to as function)
-
-    function(e){} takes the event from the click and calls that event "e"
-*/
+//function for the animated nav scroll
 $("nav a[href^='#']").click(function(e){
-    //the line below makes the link not reload the page(which is the default action)
     e.preventDefault();
-
-    /*
-        idPosNav gets the position of the one, two or three sections(depending on what you click)
-        
-        $(this) refers to what the user clicked on (a#one, a#two, or a#three)
-        
-        .attr("href") refers to the attribute of what was clicked on, which is everything after the "#", so "one", "two", or "three"
-        
-        .offset() is a function that gets the vertical co-ordinate of the section we are going to
-    */
+    console.log(e.target);
     let idPosNav = $($(this).attr("href")).offset().top - navOffset;
-
-    /*
-        $("body, html") gets jQuery to create a reference to the body and html tags
-
-        .animate() is a function that takes an object(which says what to change, in this case scrolltop), then a time for the change to happen(in this case 1000ms, or 1s) and finally how the value should change(in this case "easeInOutQuad")
-    */
     $("body, html").animate({scrollTop: idPosNav}, 1000, "easeInOutQuad");
 });
+//new: function that runs as the user scrolls
+$(window).scroll(function(){
+    
+    //for highlighting the nav of the viewable section
+
+    ////find the position of the content just under the nav
+    let topContentArea = $(window).scrollTop() + navOffset +20;
+
+    //looping functions for updating nav
+    $("section").each(function(){
+        //find the top position of each section
+        let secTopPos = $(this).offset().top;
+        //find the bottom position of each section
+        let secBottomPos = $(this).offset().top + $(this).innerHeight();
+        //finds the id of the current section
+        let secID = $(this).attr("id");
+
+        //checks if the current section is visible in viewport
+        if(topContentArea>=secTopPos && topContentArea<=secBottomPos){
+            //adds class to the related section nav
+            $("nav a[href='#"+secID+"']").addClass("active");
+        }else{
+            //remove the class from the related section navOffset
+            $("nav a[href='#"+secID+"']").removeClass("active");
+        }
+    });
+
+    //animate content on the screen
+    //check the location of each element to animate in
+    $(".revealElement").each(function(e){
+        //finding the bottom of the object
+        let bottomOfObject = $(this).offset().top + $(this).innerHeight();
+
+        //finding the position of the bottom of the window
+        let bottomOfWindow = topContentArea + $(window).height();
+
+        //if the object is completely visible in the window, animate it in
+        if(bottomOfObject<bottomOfWindow){
+            $(this).animate({
+                opacity:1,
+                'margin-left': 0
+            }, 1000, "easeInOutQuad");
+        }
+    });
+});
+
+//animation the intro content on page load
+$("#introTitle").delay(250).animate(
+    {opacity:1},
+    500,
+    "easeInOutQuad"
+);
+
+$("#introParagraph1").delay(500).animate(
+    {opacity:1,'margin-right':0},
+    500,
+    "easeInOutQuad"
+);
+
+$("#introParagraph2").delay(750).animate(
+    {opacity:1, 'margin-left':0},
+    500,
+    "easeInOutQuad"
+);
+
